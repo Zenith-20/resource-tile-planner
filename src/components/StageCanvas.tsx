@@ -1,9 +1,6 @@
-import { Layer, Stage } from "react-konva";
+import { Stage } from "react-konva";
 import GridLayer from "./GridLayer";
-import { useEffect, useRef } from "react";
-import type Konva from "konva";
 import type { KonvaEventObject } from "konva/lib/Node";
-import Tile from "./Tile";
 import TileLayer from "./TileLayer";
 import { useEditor } from "../hooks/useEditor";
 
@@ -14,7 +11,7 @@ type StageCanvasProps = {
 }
 
 export default function StageCanvas({width,height}:StageCanvasProps){
-    const {stageRef,openContextMenu,closeContextMenu,cellSize,tiles}= useEditor()
+    const {stageRef,openContextMenu,closeContextMenu,cellSize}= useEditor()
     const scrollScaleBy = 1.05
 
     

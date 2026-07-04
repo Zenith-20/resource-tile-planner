@@ -1,19 +1,14 @@
-import { Drawer, Accordion, Flex, ActionIcon, Stack, Text,Select, NumberInput, Slider, ColorInput, MultiSelect, Fieldset, Paper, Title, Divider } from "@mantine/core";
-import { SquareIcon, LockSimpleIcon, LockSimpleOpenIcon } from "@phosphor-icons/react";
+import { Drawer, Accordion, Flex, ActionIcon, Stack, Text,Select, NumberInput, Slider, ColorInput, MultiSelect, Paper, Title, Divider } from "@mantine/core";
+import { LockSimpleIcon, LockSimpleOpenIcon } from "@phosphor-icons/react";
 import { useEditor } from "../hooks/useEditor";
 import { useState } from "react";
-import type { Output, Resource, Tile } from "../types/tile";
-import Konva from "konva";
+import type { Output, Tile } from "../types/tile";
 
-type PropsDrawerProps = {
-    isOpen: boolean,
-    close: () => void
-}
 function GetGCD(a: number, b: number): number {
     return b === 0 ? a : GetGCD(b, a % b);
 }
 export default function PropsDrawer() {
-    const { propsMenu, tiles, resources,stageRef } = useEditor()
+    const { propsMenu, tiles, resources} = useEditor()
     const [isLockedRatio, setIsLockedRatio] = useState(false)
     const [ratioData, setRatioData] = useState({
         width: 1,

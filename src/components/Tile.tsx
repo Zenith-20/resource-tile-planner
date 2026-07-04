@@ -1,12 +1,10 @@
 import { lighten } from "@mantine/core";
-import Konva from "konva";
 import type { KonvaEventObject } from "konva/lib/Node";
 import type { Vector2d } from "konva/lib/types";
 import { useState} from "react";
 import { Group, Rect } from "react-konva";
 import { useEditor } from "../hooks/useEditor";
 import type { Tile, TileColorPresets } from "../types/tile";
-import type { Shape } from "konva/lib/Shape";
 
 type TileProps = {
     id:string
@@ -24,7 +22,7 @@ export default function Tile({id,width,height,x,y,fill="#4578FC",dragFunc,effect
     function updateMainPos(e:KonvaEventObject<DragEvent>){
         setMainPos({x:e.target.x(),y:e.target.y()})
     }
-    const {tiles,stageRef} = useEditor()
+    const {tiles} = useEditor()
 
     function getCursorFunc(type:"mouseEnter"|"dragStart"|"dragEnd"|"mouseOut"){
         return (e:KonvaEventObject<MouseEvent>)=>{
@@ -33,6 +31,8 @@ export default function Tile({id,width,height,x,y,fill="#4578FC",dragFunc,effect
             switch (type) {
                 case "dragEnd" :
                     tiles.updateSelectedTile({...tiles.selectedTile!,x:mainPos.x,y:mainPos.y})
+                    stage.container().style.cursor = "grab"
+                    break
                 case "mouseEnter":
                     stage.container().style.cursor = "grab"
                     break;

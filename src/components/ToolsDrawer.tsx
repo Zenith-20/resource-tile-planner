@@ -1,7 +1,5 @@
 import { Drawer, Accordion, ActionIcon, Flex,Text, Stack } from "@mantine/core"
 import { SquareIcon } from "@phosphor-icons/react"
-import { useContext } from "react"
-import { EditorContext } from "../contexts/EditorContext"
 import { useEditor } from "../hooks/useEditor"
 import type { Tile } from "../types/tile"
 

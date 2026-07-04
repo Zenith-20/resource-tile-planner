@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
-import { AppShell, Button, MantineProvider, Title, Flex, Divider, Group, Text, Fieldset, Container, ActionIcon, Tooltip } from '@mantine/core'
+import { AppShell, Button, MantineProvider, Title, Flex, Divider, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import StageCanvas from './components/StageCanvas'
-import { ToolboxIcon, CubeIcon, PlusIcon, PencilSimpleIcon } from '@phosphor-icons/react';
+import { ToolboxIcon } from '@phosphor-icons/react';
 import { EditorProvider } from './contexts/EditorProvider'
 import ToolsDrawer from './components/ToolsDrawer'
 import EditorContextMenu from './components/EditorContextMenu'
@@ -40,7 +40,7 @@ function App() {
                   <Button onClick={isOpen ? close : open} leftSection={<ToolboxIcon size={20} />}> Tools</Button>
                 </Flex>
               </Flex>
-              <Divider orientation="vertical" mt="xs" size="md"/>
+              <Divider orientation="vertical" mt="xs" size="md" />
               <ResourcePanel />
             </Group>
 

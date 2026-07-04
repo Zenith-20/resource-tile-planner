@@ -1,34 +1,69 @@
-# React + TypeScript + Vite
+<h1 align="center">Resource Tile Planner</h1>
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A resource‑aware tile sandbox for experimenting with grid layouts, observing a layout's outputs, and optimizing tile placement.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Problem
+Tile‑based building games often lock layout controls behind progression systems, limiting experimentation. This makes it hard for players or developers to freely test layouts and resource outputs.
 
-## React Compiler
+## Solution
+Resource Tile Planner removes those restrictions. It provides a **resource‑aware tile system** where you can plan layouts, observe resource generation, and experiment with AOE modifiers. Otherwise, you can skip the resources and work with a simple tile planner too. I aim to keep the app general so it can be expanded into other use cases.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+---
 
-Note: This will impact Vite dev & build performances.
+## Features
+- Snap‑to‑grid tile placement
+- Resource system with:
+  - Tiles that generate resources (labelled as tile outputs)
+  - Color‑based highlighting for AOE and outputs
+- Three preset tiles to start with
+- Tile customization:
+  - Adjust width/height (snapped to grid)
+  - Lock aspect ratio for quick scaling
+  - Change tile color
+  - Delete selected tile
+  - Add an area of effect for 1 resource with adjustable percentage modifiers
+  - Add multiple outputs with generation amount + refresh interval
+- Auto‑aggregated resource totals for a particular layout,  displayed in amount per unit time (seconds, minutes, hours, days)
+- Auto‑aggregated bonus outputs from tiles' AOE
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## User Guide
+How can you benefit?
+- Place tiles on the grid
+- Customize their properties
+- Observe total outputs/bonuses as you place tiles
+- Experiment with AOE placements
+- Optimize layouts for maximum efficiency
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+---
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Developer Notes
+If you want to explore the code or run it locally:
+1. Install dependencies 
+    ```
+    npm install
+    ```
+2. Run dev server 
+    ```
+    npm run dev
+    ```
+
+---
+## Roadmap
+- Multiselect for moving/deleting tiles
+- LocalStorage session persistence
+- Custom presets
+- More features (your suggestions are welcome!)
+---
+## Acknowledgements
+Further updates are still in progress.
+Improvements and feature suggestions are welcome with prior discussion.
+
+Your support keeps development going !
+
+If this app helped you,please leave a comment and a star ⭐ ! 
+
+

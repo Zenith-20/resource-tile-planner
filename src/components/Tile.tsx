@@ -25,7 +25,7 @@ export default function Tile({id,width,height,x,y,fill="#4578FC",dragFunc,effect
     const {tiles,stageRef} = useEditor()
 
     function getCursorFunc(type:"mouseEnter"|"dragStart"|"dragEnd"|"mouseOut"){
-        return (e:KonvaEventObject<MouseEvent>)=>{
+        return (_e:KonvaEventObject<MouseEvent>)=>{
             const stage = stageRef.current
             if (stage == null) return
             switch (type) {

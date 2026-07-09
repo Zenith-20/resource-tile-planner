@@ -22,11 +22,11 @@ export default function Tile({id,width,height,x,y,fill="#4578FC",dragFunc,effect
     function updateMainPos(e:KonvaEventObject<DragEvent>){
         setMainPos({x:e.target.x(),y:e.target.y()})
     }
-    const {tiles} = useEditor()
+    const {tiles,stageRef} = useEditor()
 
     function getCursorFunc(type:"mouseEnter"|"dragStart"|"dragEnd"|"mouseOut"){
         return (e:KonvaEventObject<MouseEvent>)=>{
-            const stage = e.target.getStage()
+            const stage = stageRef.current
             if (stage == null) return
             switch (type) {
                 case "dragEnd" :
@@ -60,8 +60,7 @@ export default function Tile({id,width,height,x,y,fill="#4578FC",dragFunc,effect
                 onDragStart={getCursorFunc("dragStart")}
                 onMouseLeave={getCursorFunc("mouseOut")}
                 onMouseEnter={getCursorFunc("mouseEnter")} 
-                onClick={(e)=>{
-                    console.log(e.target)
+                onClick={()=>{
                     tiles.select(id)
                 }}
                 draggable onDragMove={updateMainPos} 

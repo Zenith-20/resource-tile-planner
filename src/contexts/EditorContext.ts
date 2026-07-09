@@ -16,9 +16,14 @@ export type EditorContextType = {
         duplicate:(id:string) => void
         updateSelectedTile:(tile:Tile)=>void
     }
-    openContextMenu: (e:KonvaEventObject<PointerEvent>) => void
-    closeContextMenu: () => void
-    contextMenuData:ContextMenuData
+    contextMenu:{
+        open:(e:KonvaEventObject<PointerEvent>) => void
+        close:() => void
+        data:ContextMenuData
+    }
+    // openContextMenu: (e:KonvaEventObject<PointerEvent>) => void
+    // closeContextMenu: () => void
+    // contextMenuData:ContextMenuData
     stageRef:React.RefObject<Konva.Stage|null>
     propsMenu:{
         isOpen:boolean

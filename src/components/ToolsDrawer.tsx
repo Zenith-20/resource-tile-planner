@@ -22,25 +22,18 @@ export default function ToolsDrawer({isOpen,close}:ToolsDrawerProps){
             x: pos.x,
             y: pos.y,
             fill: "#d2d9b9",
-            outputs: []
+            outputs: [],
+            type:tileType
         }
         switch (tileType){
             case "1x1":
-                tiles.add({
-                    ...newTile,
-                    x: pos.x,
-                    y: pos.y,
-                    
-                })
+                tiles.add(newTile)
                 break
             case "2x2":
                 tiles.add({
                     ...newTile,
                     width: 2,
                     height: 2,
-                    x: pos.x,
-                    y: pos.y,
-                    type:"2x2"
                 })
                 break
             case "3x3":
@@ -48,9 +41,6 @@ export default function ToolsDrawer({isOpen,close}:ToolsDrawerProps){
                     ...newTile,
                     width: 3,
                     height: 3,
-                    x: pos.x,
-                    y: pos.y,
-                    type:"3x3"
                 })
                 break
         }

@@ -35,7 +35,7 @@ export function EditorProvider({children}:EditorProviderProps){
                 outputs:e.target.getAttrs().outputs
             }}
         }))
-        console.log(e.target)
+        
     }
     function closeContextMenu(){
         setMenu((prev)=>({...prev,isOpen:false}))
@@ -53,7 +53,7 @@ export function EditorProvider({children}:EditorProviderProps){
             outputs: []
         }
         setTiles((currState)=>[...currState,newTile])
-        console.log(tiles)
+        
     }
 
     function removeTile(id:string){
@@ -125,7 +125,6 @@ export function EditorProvider({children}:EditorProviderProps){
             y: tile.y + 100,
             fill: tile.fill,
             effect:tile.effect,
-            // effectRadius: tile.effectRadius ? tile.effectRadius : 0,
             type: tile.type!,
             outputs: tile.outputs
         }
@@ -214,7 +213,7 @@ export function EditorProvider({children}:EditorProviderProps){
                 totalRateInSeconds += outputRateInSeconds
             }
         })
-        console.log("total modif",totalRateInSeconds)
+        
         return (totalRateInSeconds* secondsPerUnitTime).toFixed(3)
     }
     function getUnitTimeSeconds(unitTime:Resource["unitTime"]){
@@ -236,7 +235,11 @@ export function EditorProvider({children}:EditorProviderProps){
             cellSize:100,
             tiles:{list:tiles,duplicate:duplicateTile,add:addTile,remove:removeTile,select:selectTile,selectedTile,updateSelectedTile},
             stageRef,
-            contextMenuData:menu,openContextMenu:handleContextMenu,closeContextMenu,
+            contextMenu:{
+                data:menu,
+                open:handleContextMenu,
+                close:closeContextMenu
+            },
             resources:{
                 list: resources, add: addResource, delete: deleteResource, update: updateResource,
                 getResourceOutput,getResourceModifOutput
@@ -246,6 +249,8 @@ export function EditorProvider({children}:EditorProviderProps){
         </EditorContext>
     )
 }
+
+// Utils
 
 // Run for all tiles
 function getBonusAmount(resID:string,tile:Tile,tiles:Tile[],stageRef:React.RefObject<Konva.Stage|null>){
@@ -259,7 +264,7 @@ function getBonusAmount(resID:string,tile:Tile,tiles:Tile[],stageRef:React.RefOb
                 total = total + (baseAmount*(tile.effect.percentModif/100))
             }
         })
-        console.log(IntersectingTiles,total)
+        
         return total
     }
     return 0
@@ -278,7 +283,7 @@ function getIntersections(target:Tile,tiles:Tile[],stageRef:React.RefObject<Konv
             intersectingTiles.push(tile)
         }
     })
-    console.log("itnersefcts",intersectingTiles)
+    
     return intersectingTiles
 }
 function shrinkBoundBox(shrinkPx:number,data:{x:number,y:number,width:number,height:number}){

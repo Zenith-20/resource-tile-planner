@@ -2,21 +2,19 @@ import { Menu } from "@mantine/core";
 import { useEditor } from "../hooks/useEditor";
 
 export default function EditorContextMenu(){
-    const {contextMenuData,closeContextMenu,tiles,propsMenu} = useEditor()
-    function handleClose(){
-        closeContextMenu()
-    }
+    const {contextMenu,tiles,propsMenu} = useEditor()
+
     return (
-        <Menu width={200} onClose={handleClose} opened={contextMenuData.isOpen}>
+        <Menu width={200} onClose={contextMenu.close} opened={contextMenu.data.isOpen}>
             <Menu.Dropdown style={{
               "position":"absolute",
-              "left":contextMenuData.x,
-              "top":contextMenuData.y,
+              "left":contextMenu.data.x,
+              "top":contextMenu.data.y,
               "zIndex":999
             }}>
                 <Menu.Label>Actions</Menu.Label>
                 {
-                    contextMenuData.target?.type == "Stage" 
+                    contextMenu.data.target?.type == "Stage" 
                     ?   <>
                             
                             <Menu.Item>Open</Menu.Item>

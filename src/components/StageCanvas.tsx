@@ -11,7 +11,7 @@ type StageCanvasProps = {
 }
 
 export default function StageCanvas({width,height}:StageCanvasProps){
-    const {stageRef,openContextMenu,closeContextMenu,cellSize}= useEditor()
+    const {stageRef,contextMenu,cellSize}= useEditor()
     const scrollScaleBy = 1.05
 
     
@@ -37,7 +37,7 @@ export default function StageCanvas({width,height}:StageCanvasProps){
     }
 
     return (
-        <Stage offset={{x:-4000,y:-700}} scale={{x:0.2,y:0.2}} onMouseDown={closeContextMenu} onContextMenu={openContextMenu} onWheel={handleWheel} ref={stageRef} width={width} height={height} draggable>
+        <Stage offset={{x:-4000,y:-700}} scale={{x:0.2,y:0.2}} onMouseDown={contextMenu.close} onContextMenu={contextMenu.open} onWheel={handleWheel} ref={stageRef} width={width} height={height} draggable>
             <GridLayer spacing={cellSize} />
             <TileLayer stageRef={stageRef} />
         </Stage>

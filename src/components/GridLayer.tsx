@@ -17,7 +17,13 @@ export default function GridLayer({spacing}:GridLayerProps){
         <Layer>
             {
                 gridCells.map((data,index)=>(
-                    <Rect key={"grid"+index} x={data.x} y={data.y} fill={`${theme.colors.gray[10]}`}  width={spacing} height={spacing} stroke={theme.colors.gray[6]} listening={false} strokeWidth={1}  />
+                    <Rect 
+                        key={"grid"+index} x={data.x} y={data.y} 
+                        fill={`${theme.colors.gray[10]}`}  
+                        width={spacing} height={spacing} 
+                        stroke={theme.colors.gray[6]} 
+                        listening={false} strokeWidth={1}  
+                    />
                 ))
             }
         </Layer>

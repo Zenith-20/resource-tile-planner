@@ -94,14 +94,14 @@ export function EditorProvider({children}:EditorProviderProps){
         }
         let newTiles = tiles.map((tile)=>{
             if (tile.id === selectedTile.id){
-                updatedTile = {...tile,...updateObj}
-                return updatedTile
+                return {...tile,...updateObj}
             }
             return tile
         })
+
         // Update output modifiers
         newTiles = newTiles.map((tile)=>{
-            return {
+            const newTile = {
                 ...tile,
                 outputs:tile.outputs.map(output=>{
                     return {
@@ -110,6 +110,11 @@ export function EditorProvider({children}:EditorProviderProps){
                     }
                 })!
             }
+            if (tile.id === selectedTile.id){
+                updatedTile = newTile
+                return updatedTile
+            }
+            return newTile
         })
         setTiles(newTiles)
         setSelectedTile(updatedTile)
@@ -271,15 +276,27 @@ function getBonusAmount(resID:string,tile:Tile,tiles:Tile[],stageRef:React.RefOb
 }
 function getIntersections(target:Tile,tiles:Tile[],stageRef:React.RefObject<Konva.Stage|null>){
     if(stageRef.current == null) return
-    const targetTileRect = stageRef.current.findOne(`#${target.id}`)!
-    const targetBoundBox = shrinkBoundBox(1,targetTileRect.getClientRect())
+    // const targetTileRect = stageRef.current.findOne(`#${target.id}`)!
+    let targetBoundBox = {
+        x:target.x,
+        y:target.y,
+        width:target.width*100,
+        height:target.height*100
+    }
+    targetBoundBox = shrinkBoundBox(10,targetBoundBox)
     const intersectingTiles:Tile[] = []
     tiles.forEach((tile)=>{
         if(stageRef.current == null) return
-        const tileRect = stageRef.current.findOne(`#${tile.id}AOE`)!
-        const tileRectBoundBox = shrinkBoundBox(1,tileRect.getClientRect())
-        const intersects = Konva.Util.haveIntersection(targetBoundBox,tileRectBoundBox)
-        if(intersects && tile.id != target.id){
+        // const tileRect = stageRef.current.findOne(`#${tile.id}AOE`)!
+        let tileRectBoundBox = {
+            x:tile.x-5-(tile.effect?.radius!*100),
+            y:tile.y-5-(tile.effect?.radius!*100),
+            width:(tile.width+(2*tile.effect?.radius!))*100,
+            height:(tile.height+(2*tile.effect?.radius!))*100
+        }
+        tileRectBoundBox = shrinkBoundBox(10,tileRectBoundBox)
+        const intersectsAOE = Konva.Util.haveIntersection(targetBoundBox,tileRectBoundBox)
+        if(intersectsAOE && tile.id != target.id){
             intersectingTiles.push(tile)
         }
     })

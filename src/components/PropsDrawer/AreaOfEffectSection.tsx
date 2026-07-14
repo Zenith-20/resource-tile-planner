@@ -1,13 +1,45 @@
 import { Accordion, NumberInput, Select, Slider,Text } from "@mantine/core";
 import { useEditor } from "../../hooks/useEditor";
-import type { Tile } from "../../types/tile";
+import type { Tile,Resource } from "../../types/tile";
+import type { EditorContextType } from "../../contexts/EditorContext";
+import PropsDrawer from "./PropsDrawer";
 
 
-
+/**
+ * Dedicated section (accordion item component) for configuring Area Of Effect 
+ * 
+ * Used internally in {@link PropsDrawer} component
+ * 
+ * @example 
+ * ```jsx
+ *  <Accordion> // Mantine's accordion component
+ *      <AreaOfEffectSection/>
+ *  </Accordion>
+ * ```
+ * @remarks
+ * Handles : 
+ * - Reading and writing the `effect` property - {@link Tile.effect}
+ * 
+ * Requirements before use :
+ * - An existing tile must be selected and stored in `tiles.selectedTile` - {@link EditorContextType.tiles}
+*/
 export default function AreaOfEffectSection(){
     const {tiles,resources} = useEditor()
 
-    function handleAoeResourceChange(resID:string){
+    /**
+     * Updates `Tile.effect.targetResource` - {@link Tile}
+     * @param resID - ID of resource to assign
+     * @remarks
+     * `targetResource` is of type {@link Resource}
+     * 
+     * Requirements before use :
+     * - A non-empty `resID` must point to an existing {@link Resource} 
+     * 
+     * Effects :
+     * - If empty `resID` , `Tile.effect` is set to undefined
+     * - If non-empty `resID` , `Tile.effect` is set to initial lowest valid values (`radius:0`,`percentModif:0`) and `targetResource` is linked
+     */
+    function handleAoeResourceChange(resID:string): void{
         if (resID == ""){
             tiles.updateSelectedTile({...tiles.selectedTile!,effect:undefined})
             return
@@ -15,7 +47,17 @@ export default function AreaOfEffectSection(){
         const res = resources.list.find((res)=>res.id == resID)!
         tiles.updateSelectedTile({...tiles.selectedTile!,effect:{radius:0,targetResource:res,percentModif:0}})
     }
-    function handleEffectDataChange(updateObj:Partial<Omit<Tile["effect"],"targetResource">>){
+    
+    /**
+     * Updates  properties of `Tile.effect`, excluding `targetResource`.
+     *
+     * @param updateObj - Partial update containing one or more of:
+     * - `radius`
+     * - `percentModif`
+     *
+     * The update object type is derived from {@link Tile.effect}, excluding `targetResource`.
+     */
+    function handleEffectDataChange(updateObj:Partial<Omit<Tile["effect"],"targetResource">>): void{
         tiles.updateSelectedTile({...tiles.selectedTile!,effect:{...tiles.selectedTile?.effect!,...updateObj}})
     }
 

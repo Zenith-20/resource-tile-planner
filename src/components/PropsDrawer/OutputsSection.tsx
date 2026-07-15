@@ -2,7 +2,30 @@ import { Accordion, MultiSelect } from "@mantine/core"
 import OutputItem from "../PropsDrawer/OutputItem"
 import { useEditor } from "../../hooks/useEditor"
 import type { Output } from "../../types/tile"
+import PropsDrawer from "./PropsDrawer"
+import type { Tile } from "../../types/tile"
+import type { EditorContextType } from "../../contexts/EditorContext"
 
+/**
+ * Dedicated accordion item for configuring selected tile's outputs
+ * 
+ * Uses {@link OutputItem} custom component
+ * 
+ * Used internally by {@link PropsDrawer} component
+ * 
+ * @example 
+ * ```jsx
+ *  <Accordion> // Mantine's accordion component
+ *      <OutputsSection/>
+ *  </Accordion>
+ * ```
+ * @remarks
+ * Responsibilities: 
+ * - Manages the selected tile's `outputs` property - {@link Tile}
+ * 
+ * Requirements before use :
+ * - A tile must be selected and stored in `tiles.selectedTile` - {@link EditorContextType.tiles}
+*/
 export default function OutputsSection(){
     const {tiles, resources} = useEditor()
 
@@ -14,6 +37,11 @@ export default function OutputsSection(){
         return Ids
     }
     
+    /**
+     * Handles MultiSelect value change and updates the selected tile's outputs accordingly
+     * 
+     * @param outputResourceIds - IDs of outputs selected
+     */
     function handleOutputsChange(outputResourceIds: string[]) {
         let currOutputs = tiles.selectedTile?.outputs!
         let oldResourceIds = currOutputs.map((output) => (output.id))
@@ -32,6 +60,17 @@ export default function OutputsSection(){
         tiles.updateSelectedTile({ ...tiles.selectedTile!, outputs: newOutputs })
     }
 
+    /**
+     * Updates properties of an output in `Tile.outputs`, excluding `id`
+     * 
+     * @param id - ID of output being edited
+     * @param updateObj - Partial update containing one or more of:
+     * - `amount`
+     * - `modifAmount`
+     * - `refreshSeconds`
+     *
+     * The update object type is derived from {@link Output}, excluding `id`.
+     */
     function handleOutputDataChange(id:string,updateObj:Partial<Omit<Output,"id">>){
         const currOutputs = tiles.selectedTile?.outputs!
         const newOutputs = currOutputs.map((output)=>{

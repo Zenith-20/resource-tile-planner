@@ -4,6 +4,13 @@ import { Layer, Rect} from "react-konva";
 type GridLayerProps = {
     spacing:number
 }
+
+/**
+ * A static Konva Layer that creates an underlying grid with a fixed coverage area
+ * to give users a reference point for grid-based layout and movement.
+ *
+ * @param spacing - Distance between each grid cell
+ */
 export default function GridLayer({spacing}:GridLayerProps){
     const theme = useMantineTheme()
     let gridCells:{x:number,y:number}[] = [];

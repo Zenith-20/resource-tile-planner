@@ -7,6 +7,18 @@ import type { KonvaEventObject } from "konva/lib/Node";
 type EditorProviderProps = {
     children:ReactNode
 }
+
+/**
+ * A context wrapper that handles all changes to 
+ * editor's state and provides necessary states back to components
+ * 
+ * Responsibilities:
+ * - Tile CRUD
+ * - Resource CRUD
+ * - Selected tile state
+ * - Context menu state
+ * - Output/effect calculations
+ */
 export function EditorProvider({children}:EditorProviderProps){
     const [tiles,setTiles] = useState<Tile[]>([])
     const [selectedTile,setSelectedTile] = useState<Tile>()
@@ -16,6 +28,14 @@ export function EditorProvider({children}:EditorProviderProps){
         isOpen:false,x:0,y:0
     })
     const [resources,setResources] = useState<Resource[]>([])
+
+    /**
+     * Prevents defualt context menu behaviour and toggles context menu 
+     * with an appropriate target (Stage,Tile) based on mouse click position
+     * 
+     * Affects context menu state
+     * @param e - Pointer event object with extra properties provided by Konva
+     */
     function handleContextMenu(e:KonvaEventObject<PointerEvent>){
         e.evt.preventDefault()
         stageRef.current?.preventDefault()
@@ -37,9 +57,21 @@ export function EditorProvider({children}:EditorProviderProps){
         }))
         
     }
+
+    /**
+     * Closes the editor context menu without checking any initial state
+     * 
+     * Affects context menu state
+     */
     function closeContextMenu(){
         setMenu((prev)=>({...prev,isOpen:false}))
     }
+
+    /**
+     * Creates and adds a new tile to editor. 
+     * Affects the list of tiles state
+     * @param tile - The tile object to add to list of existing tiles
+     */
     function addTile(tile:Tile){
         const newTile:Tile = {
             type: tile.type ? tile.type : "1x1",
@@ -56,6 +88,17 @@ export function EditorProvider({children}:EditorProviderProps){
         
     }
 
+    /**
+     * Removes tile of given `id` 
+     * 
+     * Updates remaining tiles' 
+     * outputs (in case the tile being removed was affecting other tiles's outputs)
+     * 
+     * Closes properties menu to avoid any editing ,becuase given tile ,that will always be a selected tile, is deleted
+     * 
+     * Affects properties menu open/close state and tiles list state
+     * @param id - ID of tile to delete
+     */
     function removeTile(id:string){
         let newTiles = tiles.filter((tile)=>tile.id !== id)
         // Update output modifiers
@@ -74,6 +117,12 @@ export function EditorProvider({children}:EditorProviderProps){
         setTiles(newTiles)
     }
 
+    /**
+     * Selects a tile that may be further edited
+     * 
+     * Affects selected tile state
+     * @param id - ID of tile to select
+     */
     function selectTile(id:string){
         if(id === ""){
             setSelectedTile(undefined)
@@ -81,6 +130,15 @@ export function EditorProvider({children}:EditorProviderProps){
         }
         setSelectedTile(tiles.find(tile => tile.id === id))
     }
+    /**
+     * Updates properties of the selected tile
+     * 
+     * Updates remaining tiles' 
+     * outputs (in case the tile being updated was affecting other tiles's outputs)
+     * 
+     * Affects tiles list state and selected tile state
+     * @param updateObj - Partial update object containing any or all of properties of a {@link Tile}
+     */
     function updateSelectedTile(updateObj:Partial<Tile>){
         if(!selectedTile) throw new Error("No tile selected error")
         let updatedTile:Tile = {
@@ -120,8 +178,16 @@ export function EditorProvider({children}:EditorProviderProps){
         setSelectedTile(updatedTile)
     }
 
+    /**
+     * Creates a new tile with a new id and other properties set as same properties as of tile of given id
+     * 
+     * Offsets the position of new tile being created to show a new tile has been created close to original tile
+     * 
+     * Affects tiles list state
+     * @param id - ID of tile to duplicate
+     */
     function duplicateTile(id:string){
-        const tile = tiles.find((tile) => tile.id == id)! // Never undefined , duplicate only available on clicking tile
+        const tile = tiles.find((tile) => tile.id == id)! // Never undefined , duplicate option only available on clicking tile
         const newTile:Tile = {
             id: crypto.randomUUID(),
             width: tile.width,
@@ -136,10 +202,24 @@ export function EditorProvider({children}:EditorProviderProps){
         setTiles((prev)=>[...prev,newTile])
     }
 
+    /**
+     * Creates a new globally available resource
+     * 
+     * Affects resources list state
+     * @param res - Object of type {@link Resource} to create
+     */
     function addResource(res:Resource){
         setResources((prev)=>[...prev,res])
     }
     
+    /**
+     * Deletes a resource of given `id` and updates tiles by removing any tile's outputs or effects that reference the deleted resource
+     * 
+     * Updates selected tile to sync with the new list of tiles
+     * 
+     * Affects tiles list state ,selected tile state and resources list state
+     * @param id - ID of resource to delete
+     */
     function deleteResource(id:string){
         const newResources = resources.filter((res)=>res.id !== id)
         const foundTiles = getResourceDependents(id)
@@ -164,12 +244,24 @@ export function EditorProvider({children}:EditorProviderProps){
         setTiles(newTiles)
         setResources(newResources)
     }
+
+    /**
+     * Utility function used internally to get tiles that depend on a given resource
+     * @param resourceID - ID of resource for which depending tiles are searched
+     */
     function getResourceDependents(resourceID:string):Tile[]{
         const tilesMatched = tiles.filter((tile)=>(
             tile.outputs.some((output)=>(output.id == resourceID))
         ))
         return tilesMatched
     }
+
+    /**
+     * Updates given resource and syncs each tiles' effect to the updated resource
+     * 
+     * Affects resources list state and tiles list state
+     * @param updateObj - The updated resource object
+     */
     function updateResource(updateObj:Resource){
         let updatedRes:Resource = {
             id: "",
@@ -194,6 +286,11 @@ export function EditorProvider({children}:EditorProviderProps){
         setResources(newResources)
         setTiles(newTiles)
     }
+    /**
+     * Aggregates output rates from all tiles for given resource
+     * @param id - ID of resource for which outputs are searched
+     * @returns String representation of total output amount for given resource
+     */
     function getResourceOutput(id:string){
         const res = resources.find((res)=>res.id == id)!
         const depTiles = getResourceDependents(id)
@@ -206,6 +303,12 @@ export function EditorProvider({children}:EditorProviderProps){
         })
         return (totalRateInSeconds* secondsPerUnitTime).toFixed(3)
     }
+
+    /**
+     * Aggregates bonus output rates ,that is `modifAmount`, (due to a tile being affected by an AOE) from all tiles for given resource
+     * @param id - ID of resource for which outputs are searched
+     * @returns String representation of total output amount for given resource
+     */
     function getResourceModifOutput(id:string){
         const res = resources.find((res)=>res.id == id)!
         const depTiles = getResourceDependents(id)
@@ -221,6 +324,12 @@ export function EditorProvider({children}:EditorProviderProps){
         
         return (totalRateInSeconds* secondsPerUnitTime).toFixed(3)
     }
+
+    /**
+     * Utility function used internally to convert the string options of {@link Resource.unitTime} to number of seconds
+     * @param unitTime - String option derived from {@link Resource.unitTime}
+     * @returns Number of seconds for given unit time
+     */
     function getUnitTimeSeconds(unitTime:Resource["unitTime"]){
         switch (unitTime) {
             case "second":
@@ -257,7 +366,15 @@ export function EditorProvider({children}:EditorProviderProps){
 
 // Utils
 
-// Run for all tiles
+/**
+ * Checks intersections of `tile` with `tiles` AOE (excluding self tile).If intersects , the 
+ * modifier from effect of other tile is applied on output of target `tile` to get its `modifAmount`
+ * @param resID - Resource ID for which `modifAmount` is aggregated
+ * @param tile - Tile for which `modifAmount` is aggregated
+ * @param tiles - All tiles in editor , to check for intersections
+ * @param stageRef - React ref object to access stage methods
+ * @returns Total `modifAmount` for given `tile` 
+ */
 function getBonusAmount(resID:string,tile:Tile,tiles:Tile[],stageRef:React.RefObject<Konva.Stage|null>){
     const IntersectingTiles = getIntersections(tile,tiles,stageRef)
     const output = tile.outputs.find((o)=>o.id==resID)!
@@ -274,6 +391,13 @@ function getBonusAmount(resID:string,tile:Tile,tiles:Tile[],stageRef:React.RefOb
     }
     return 0
 }
+
+/**
+ * Gets all tiles whose AOE overlaps with given `tile`
+ * @param target - Tile with which intersections of other tiles' AOE is checked
+ * @param tiles - All tiles in editor
+ * @param stageRef - React ref object to access stage methods
+ */
 function getIntersections(target:Tile,tiles:Tile[],stageRef:React.RefObject<Konva.Stage|null>){
     if(stageRef.current == null) return
     // const targetTileRect = stageRef.current.findOne(`#${target.id}`)!
@@ -303,6 +427,17 @@ function getIntersections(target:Tile,tiles:Tile[],stageRef:React.RefObject<Konv
     
     return intersectingTiles
 }
+
+/**
+ * Shrinks all four sides of a bounding box by a fixed amount.
+ *
+ * Used to make AOE intersection checks slightly more forgiving by
+ * reducing false positives when two tiles only touch at their edges.
+ *
+ * @param shrinkPx - Pixels to shrink each side.
+ * @param data - Bounding box to shrink.
+ * @returns A new shrunken bounding box.
+ */
 function shrinkBoundBox(shrinkPx:number,data:{x:number,y:number,width:number,height:number}){
     return {
         x:data.x + shrinkPx,

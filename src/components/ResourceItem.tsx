@@ -1,11 +1,36 @@
 import { ActionIcon, Tooltip, Flex,Text,Group } from "@mantine/core";
 import { CubeIcon, PencilSimpleIcon } from "@phosphor-icons/react";
-import type { Resource } from "../types/tile";
+import type { Resource,Tile } from "../types/tile";
 import { useEditor } from "../hooks/useEditor";
+import ResourcePanel from "./ResourcePanel";
 
 type ResourceItemProps = {
     onClickEdit:(res:Resource) => void
 } & Resource
+
+/**
+ * ActionIcon Group component for displaying a resource and option to edit it
+ * 
+ * Used internally by {@link ResourcePanel} component
+ * 
+ * @example 
+ * ```jsx
+ *  <Group> // Mantine's group component
+ *      <ResourceItem 
+ *          onClickEdit={handleEditClick} 
+ *          id="123ABC" 
+ *          name="Resource" 
+ *          color="#FFD700" 
+ *          unitTime="second" 
+ *      />
+ *  </Group>
+ * ```
+ * 
+ * @remarks
+ * Responsibilities: 
+ * - Formats and displays properties of a resource, except for id - {@link Resource}
+ * - Formats and displays the aggregated output rates (`amount` and `modifAmount`) from all tiles referencing the resource - {@link Tile.outputs}
+*/
 export default function ResourceItem({onClickEdit,...resource}:ResourceItemProps){
     const {resources} = useEditor()
     return(
@@ -34,6 +59,11 @@ export default function ResourceItem({onClickEdit,...resource}:ResourceItemProps
 
 // Utils
 
+/**
+ * Maps {@link Resource.unitTime} to string time to display in resource item
+ * @param unitTime - String option derived from {@link Resource.unitTime}
+ * @returns The abbreviated unit ("s", "min", "hr", or "day")
+ */
 function getUnitTimePrefix(unitTime:Resource["unitTime"]){
     switch (unitTime) {
         case "second":

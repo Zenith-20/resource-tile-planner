@@ -10,11 +10,26 @@ type StageCanvasProps = {
     height:number,
 }
 
+/**
+ * Primary interactive Konva Stage component
+ * 
+ * Uses {@link GridLayer} and {@link TileLayer} custom components
+ * 
+ * @remarks
+ * Responsibilities: 
+ * - Manages canvas dragging and zoom in/out inputs
+ * - Handles context menu right click interactions
+*/
 export default function StageCanvas({width,height}:StageCanvasProps){
     const {stageRef,contextMenu,cellSize}= useEditor()
-    const scrollScaleBy = 1.05
+    const scrollScaleBy = 1.05 
 
-    
+    /**
+     * Handles zoom in/out inputs and applies mouse centered scaling on canvas
+     * 
+     * Provides an additional feature of reverting scroll direction with scale in/out by simultaneously having `Ctrl` key pressed while scrolling
+     * @param e - Wheel event object with extra properties provided by Konva wrapper
+     */
     function handleWheel(e:KonvaEventObject<WheelEvent>){
         if (!stageRef.current) return
         e.evt.preventDefault()
@@ -28,7 +43,7 @@ export default function StageCanvas({width,height}:StageCanvasProps){
         let dir = e.evt.deltaY > 0 ? -1 : 1
         if(e.evt.ctrlKey) {dir = -dir}
         let newScale = dir > 0 ? oldScale * scrollScaleBy : oldScale / scrollScaleBy
-        newScale = Math.max(0.1,Math.min(5,newScale))
+        newScale = Math.max(0.1,Math.min(5,newScale)) // Clamps scaling to min 0.1 and max 5
         stage.scale({x:newScale,y:newScale})
         stage.position({
             x:pointer.x - mousePointTo.x * newScale,

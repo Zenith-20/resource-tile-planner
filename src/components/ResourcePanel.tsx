@@ -7,17 +7,37 @@ import type { Resource } from "../types/tile";
 import ResourceItem from "./ResourceItem";
 
 
-
+/**
+ * Panel with modals for configuring global resources
+ * 
+ * Uses {@link ResourceItem} custom component
+ * 
+ * @remarks
+ * Responsibilities: 
+ * - Manages the selected resource's properties through create/edit modals - {@link Resource}
+ * - Manages state of create/edit modals for a selected resource
+*/
 export default function ResourcePanel() {
     const { resources } = useEditor()
     const [openedCreateMenu,createMenuHandler] = useDisclosure(false)
     const [openedEditMenu,editMenuHandler] = useDisclosure(false)
+    
+    // Resource currently being created or edited.
+    // Both modals bind their form fields to this object.
     const [selectedResource,setSelectedResource] = useState<Resource>({
         id:"",
         name: "",
         unitTime:"second",
         color:"#FFD700"
     })
+
+    /**
+     * Creates a new resource in resources list with resource data taken from data entered in create modal
+     * 
+     * Resets currently selected resource and closes create modal
+     * 
+     * Performs data validation e.g preventing creation of unnamed resources
+     */
     function createResource(){
         if(selectedResource.name == "") return
         const newResource:Resource = {
@@ -37,6 +57,11 @@ export default function ResourcePanel() {
         })
         
     }
+
+    /**
+     * Opens edit modal and loads selected resource into input fields
+     * @param res - {@link Resource} to load into edit modal
+     */
     function handleEditClick(res:Resource){
         setSelectedResource({
             id:res.id,
@@ -46,9 +71,22 @@ export default function ResourcePanel() {
         })
         editMenuHandler.open()
     }
+
+    /**
+     * Manages selected resource's name input
+     * @param e - React change event for the name text input
+     */
     function handleInput(e:React.ChangeEvent<HTMLInputElement, HTMLInputElement>){
         setSelectedResource((prev)=>({...prev,name:e.target.value}))
     }
+
+    /**
+     * Deletes a selected resource
+     * 
+     * Assumes a resource is selected beforehand (delete button is only available in edit context)
+     * 
+     * Closes edit menu and clears current selected resource
+     */
     function deleteResource(){
         editMenuHandler.close()
         resources.delete(selectedResource.id)
@@ -59,6 +97,12 @@ export default function ResourcePanel() {
             color:"#FFD700"
         })
     }
+
+    /**
+     * Syncs edits to selected resource to same id resource in resource list
+     * 
+     * Closes edit menu and clears current selected resource
+     */
     function editResource(){
         if(selectedResource.name == "") return
         editMenuHandler.close()

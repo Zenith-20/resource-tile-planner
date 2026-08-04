@@ -9,10 +9,23 @@ type TileLayer = {
     stageRef: React.RefObject<Konva.Stage|null>,
 }
 
+/**
+ * Konva Layer component that renders all draggable tiles on the grid.
+ *
+ * Uses {@link Tile} custom component.
+ *
+ * @remarks
+ * Responsibilities:
+ * - Creates a shared tile snap function and passes it to all tiles.
+ * - Maps tile data from the editor state into rendered {@link Tile} components.
+ */
 export default function TileLayer({stageRef}:TileLayer){
     const {tiles,cellSize} = useEditor()
 
+    // Each tile has a strokeWidth of 10px. Konva draws the outline half inside and half outside.
+    // To snap tiles perfectly within the grid, an offset of half the strokeWidth (5px) is used.
     const dragFunc = createGridSnap({gridSize:cellSize,stageRef,offsetX:5,offsetY:5})
+
     return (
         <Layer>
             {
@@ -43,6 +56,11 @@ type GridSnapOptions = {
     lockAxis?:"x"|"y"|null
 }
 
+/**
+ * Creates a function that converts dragged tile coordinates into the nearest grid-aligned position.
+ * 
+ * Accounts for stage transforms and optional axis locking before returning snapped coordinates.
+ */
 function createGridSnap({
   gridSize,
   offsetX = 0,

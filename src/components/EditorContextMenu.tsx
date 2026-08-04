@@ -1,6 +1,15 @@
 import { Menu } from "@mantine/core";
 import { useEditor } from "../hooks/useEditor";
 
+/**
+ * Top-level custom context menu used for right-click actions on the grid canvas.
+ *
+ * @remarks
+ * Responsibilities:
+ * - Provides context-specific actions depending on the targeted canvas element.
+ * - Provides tile editing actions such as edit, duplicate, and delete.
+ * - Contains placeholders for future stage-level actions.
+ */
 export default function EditorContextMenu(){
     const {contextMenu,tiles,propsMenu} = useEditor()
 

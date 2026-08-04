@@ -7,9 +7,22 @@ type ToolsDrawerProps = {
     isOpen:boolean,
     close:()=>void
 }
+
+/**
+ * Toggleable drawer containing grid editing tools.
+ *
+ * @remarks
+ * Responsibilities:
+ * - Provides tools for creating tiles on the grid.
+ */
 export default function ToolsDrawer({isOpen,close}:ToolsDrawerProps){
     const {tiles,stageRef,cellSize} = useEditor()
     
+    /**
+     * Creates a new tile of the given type on the grid canvas.
+     *
+     * @param tileType - String option derived from {@link Tile.type}; expected to be defined when called.
+     */
     function handleAdd(tileType:Tile["type"]){
         const pos = {
             x: (Math.round((stageRef.current?.width()! /2) / cellSize) * cellSize)+5,

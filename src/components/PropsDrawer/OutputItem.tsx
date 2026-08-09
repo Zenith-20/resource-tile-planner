@@ -1,11 +1,23 @@
 import { Paper, Stack, Title, Divider, NumberInput,Text } from "@mantine/core";
 import type { Output, Resource } from "../../types/tile.ts";
+import OutputsSection from "./OutputsSection.tsx";
 
 type OutputItemProps = {
     resource:Resource
     output:Output
     onChange:(id:string,updateObj:Partial<Omit<Output,"id">>) => void
 }
+
+/**
+ * Card component to display an output and edit its rates
+ *
+ * Used internally by {@link OutputsSection} component
+ * 
+ * @remarks
+ * Responsibilities: 
+ * - Manages the provided output's `amount` and `refreshSeconds` - {@link Output}
+ * - Formats and displays the produced `amount` and `modifAmount` , combined with `refreshSeconds` , as rates
+*/
 export default function OutputItem({resource,output,onChange}:OutputItemProps){
     return(
         <Paper style={{boxShadow:`0px 0px 5px ${resource.color}`}} mt="sm" p="sm" withBorder >

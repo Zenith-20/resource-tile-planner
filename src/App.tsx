@@ -10,12 +10,25 @@ import EditorContextMenu from './components/EditorContextMenu'
 import PropsDrawer from './components/PropsDrawer/PropsDrawer'
 import ResourcePanel from './components/ResourcePanel'
 
-
+/**
+ * Main component that encapsulates top level components
+ * 
+ * Provides Mantine theme context and editor context
+ * 
+ * Uses {@link EditorProvider} , {@link EditorContextMenu} , {@link PropsDrawer} , {@link ToolsDrawer} and {@link ResourcePanel} custom components
+ */
 function App() {
-  const parentRef = useRef(null)
-  const [isOpen, { open, close }] = useDisclosure(true)
+  const parentRef = useRef(null) // Reference to AppShell.Main, whose dimensions are observed
+  const [isOpen, { open, close }] = useDisclosure(true) // Open/close state and control for ToolsDrawer
 
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 })
+
+  /*
+   * Creates a ResizeObserver to keep the Konva Stage sized to the
+   * available AppShell.Main area
+   * 
+   * The observer is disconnected when the component unmounts
+  */
   useEffect(() => {
     if (parentRef.current == null) return
     const observer = new ResizeObserver((entries) => {
